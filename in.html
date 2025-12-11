@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C Data Structures </title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- General Styling --- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1e1e2e; /* Dark background */
+            color: #cdd6f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #89b4fa;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* --- Accordion (Dropdown) Styling --- */
+        .accordion-item {
+            background-color: #313244;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        .accordion-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .accordion-header {
+            width: 100%;
+            background-color: #45475a;
+            color: #ffffff;
+            border: none;
+            padding: 15px 20px;
+            text-align: left;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            outline: none;
+            transition: background-color 0.3s;
+        }
+
+        .accordion-header:hover {
+            background-color: #585b70;
+        }
+
+        .accordion-header::after {
+            content: '+';
+            font-size: 1.5rem;
+            color: #89b4fa;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-header.active::after {
+            content: '−';
+            transform: rotate(180deg);
+        }
+
+        /* --- Content & Code Block Styling --- */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            background-color: #1e1e2e;
+        }
+
+        .code-wrapper {
+            position: relative; /* Needed for copy button positioning */
+            margin: 0;
+        }
+
+        /* The Copy Button */
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .copy-btn:hover {
+            background-color: #89b4fa;
+            color: #1e1e2e;
+        }
+
+        /* Override PrismJS margins */
+        pre[class*="language-"] {
+            margin: 0 !important;
+            border-radius: 0 0 8px 8px;
+            padding: 20px;
+            padding-top: 40px; /* Space for copy button */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>C Data Structures</h1>
+
+    <div class="container">
+
+        <div class="accordion-item">
+            <button class="accordion-header">1. Stack Operations</button>
+            <div class="accordion-content">
+                <div class="code-wrapper">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdbool.h&gt;
+
+#define MAX 100
+
+// Global stack and top pointer
+int stack[MAX];
+int top = -1;
+
+// Push an element to the stack
+void push(int x) {
+    if (top >= MAX - 1) {
+        printf("Stack Overflow\n");
+    } else {
+        stack[++top] = x;
+    }
+}
+
+// Pop the top element from the stack
+void pop() {
+    if (top == -1) {
+        printf("Stack Underflow\n");
+    } else {
+        int popped = stack[top--];
+    }
+}
+
+// Check if the given string is a palindrome using a stack
+void checkPalindrome(char *s) {
+    char temp_stack[101];
+    int top_s = -1;
+    int len = strlen(s);
+
+    for (int i = 0; i < len; i++) {
+        temp_stack[++top_s] = s[i];
+    }
+
+    int is_palindrome = 1;  
+    for (int i = 0; i < len; i++) {  
+        if (s[i] != temp_stack[top_s--]) {  
+            is_palindrome = 0;  
+            break;  
+        }  
+    } 
+
+    if (is_palindrome) {  
+        printf("It is a palindrome\n");  
+    } else {  
+        printf("Not a palindrome\n");  
+    }
+}
+
+// Display all elements in the stack from bottom to top
+void display() {
+    if (top == -1) {
+        printf("Stack is empty\n");
+    } else {
+        for (int i = 0; i <= top; i++) {
+            printf("%d", stack[i]);
+            if (i != top) printf(" ");
+        }
+        printf("\n");
+    }
+}
+
+void trimNewline(char *str) {
+    size_t len = strlen(str);
+    if (len > 0 && str[len-1] == '\n') {
+        str[len-1] = '\0';
+    }
+}
+
+int main() {
+    int T;
+    scanf("%d", &T);
+    getchar(); 
+
+    char command[120];
+    for (int i = 0; i < T; i++) {
+        fgets(command, sizeof(command), stdin);
+        trimNewline(command);
+
+        if (strncmp(command, "PUSH ", 5) == 0) {
+            int x;
+            sscanf(command + 5, "%d", &x);
+            push(x);
+        } else if (strcmp(command, "POP") == 0) {
+            pop();
+        } else if (strncmp(command, "PALINDROME ", 11) == 0) {
+            char str[105];
+            strcpy(str, command + 11);
+            checkPalindrome(str);
+        } else if (strcmp(command, "DISPLAY") == 0) {
+            display();
+        }
+    }
+    return 0;
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header">2. Infix to Postfix</button>
+            <div class="accordion-content">
+                <div class="code-wrapper">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;ctype.h&gt;
+
+#define MAX 100
+
+int precedence(char op) {
+    switch (op) {
+        case '+':
+        case '-': return 1;
+        case '*':
+        case '/': return 2;
+        case '^': return 3;
+    }
+    return 0;
+}
+
+void infixToPostfix(const char *infix, char *postfix) {
+    char stack[MAX];
+    int top = -1, k = 0;
+    for (int i = 0; infix[i] != '\0'; i++) {
+        char c = infix[i];
+        if (isalnum(c)) {
+            postfix[k++] = c;
+        }
+        else if (c == '(') {
+            stack[++top] = c;
+        }
+        else if (c == ')') {
+            while (top != -1 && stack[top] != '(') {
+                postfix[k++] = stack[top--];
+            }
+            if (top != -1) top--; 
+        }
+        else {  
+            while (top != -1 && precedence(stack[top]) >= precedence(c)) {
+                if (c == '^' && stack[top] == '^') break;
+                else
+                    postfix[k++] = stack[top--];
+            }
+            stack[++top] = c;
+        }
+    }
+    while (top != -1) {
+        postfix[k++] = stack[top--];
+    }
+    postfix[k] = '\0';
+}
+
+int main() {
+    char infix[55], postfix[55];
+    if (!fgets(infix, sizeof(infix), stdin)) return 0;
+    infix[strcspn(infix, "\n")] = '\0';
+
+    infixToPostfix(infix, postfix);
+    printf("Given Infix Expn: %s\n", infix);
+    printf("Postfix Expn: %s\n", postfix);
+    return 0;
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header">3. Evaluation of Postfix</button>
+            <div class="accordion-content">
+                <div class="code-wrapper">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;ctype.h&gt;
+#include &lt;math.h&gt;
+
+#define MAX 100
+
+int stack[MAX];
+int top = -1;
+
+void push(int value) {
+    if(top >= MAX-1) {
+        printf("Stack overflow\n");
+    } else {
+        stack[++top] = value;
+    }
+}
+
+int pop() {
+    if(top == -1) {
+        printf("Stack Underflow\n");
+        return 0; 
+    } else {
+        return stack[top--];
+    }
+}
+
+int performOperation(char operator, int operand1, int operand2) {
+    if(operator == '+') return operand1 + operand2;
+    else if(operator == '-') return operand1 - operand2;
+    if(operator == '*') return operand1 * operand2;
+    if(operator == '/') return operand1 / operand2;
+    if(operator == '%') return operand1 % operand2;
+    if(operator == '^') return (int)pow(operand1, operand2);
+    return 0;
+}
+
+int evaluatePostfix(char* expression) {
+    for(int i = 0; i < strlen(expression); i++) {
+        if(isdigit(expression[i])) {
+            push(expression[i] - '0');
+        } else {
+            int a = pop();
+            int b = pop();
+            int result = performOperation(expression[i], b, a);
+            push(result);
+        }
+    }
+    if(top != -1) return stack[top];
+    return 0;
+}
+
+int main() {
+    char expression[MAX];
+    scanf("%s", expression);
+    int result = evaluatePostfix(expression);
+    printf("%d\n", result);
+    return 0;
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header">4. Circular Queue Operations</button>
+            <div class="accordion-content">
+                <div class="code-wrapper">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+#define MAX 5
+
+char Q[MAX];
+int front = -1, rear = -1;
+
+void enqueue(char ch) {
+   if ((front == 0 && rear == MAX - 1) || (rear + 1) % MAX == front) {
+        printf("Queue is full. Enqueue not possible\n");
+        return;
+    }
+    if (front == -1) {
+        front = rear = 0;
+    } else {
+        rear = (rear + 1) % MAX;
+    }
+    Q[rear] = ch;
+}
+
+void dequeue() {
+    if (front == -1) {
+        printf("Queue is empty. Dequeue not possible\n");
+        return;
+    }
+    printf("The item dequeued is %c\n", Q[front]);
+    if (front == rear) {
+        front = rear = -1;
+    } else {
+        front = (front + 1) % MAX;
+    }
+}
+
+void display() {
+    if (front == -1) {
+        printf("Queue is empty. Nothing to display\n");
+        return;
+    }
+    printf("The elements in the queue are\n");
+    int i = front;
+    while (1) {
+        printf("Queue[%d] ======> %c\n", i, Q[i]);
+        if (i == rear) break;
+        i = (i + 1) % MAX;
+    }
+}
+
+int main() {
+    int cmd;
+    while (scanf("%d", &cmd) == 1) {
+        if (cmd == 1) {
+            char ch; scanf(" %c", &ch);
+            enqueue(ch);
+        } else if (cmd == 2) {
+            dequeue();
+        } else if (cmd == 3) {
+            display();
+        } else {
+            break;
+        }
+    }
+    return 0;
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header">5. Singly Linked List</button>
+            <div class="accordion-content">
+                <div class="code-wrapper">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+#define MAX_LEN 21
+
+typedef struct Student {
+    char usn[MAX_LEN];
+    char name[MAX_LEN];
+    char programme[MAX_LEN];
+    int sem;
+    char phNo[MAX_LEN];
+    struct Student* next;
+} Student;
+
+Student* head = NULL;
+
+Student* createNode(char* usn, char* name, char* programme, int sem, char* phNo) {
+    Student* newNode = (Student*)malloc(sizeof(Student));
+    strcpy(newNode->usn, usn);
+    strcpy(newNode->name, name);
+    strcpy(newNode->programme, programme);
+    newNode->sem = sem;
+    strcpy(newNode->phNo, phNo);
+    newNode->next = NULL;
+    return newNode;
+}
+
+void createList(int n) {
+    for (int i = 0; i < n; i++) {
+        char usn[MAX_LEN], name[MAX_LEN], programme[MAX_LEN], phNo[MAX_LEN];
+        int sem;
+        scanf("%s %s %s %d %s", usn, name, programme, &sem, phNo);
+        Student* newNode = createNode(usn, name, programme, sem, phNo);
+        newNode->next = head;
+        head = newNode;
+    }
+}
+
+void insertFront(char* usn, char* name, char* programme, int sem, char* phNo) {
+    Student* newNode = createNode(usn, name, programme, sem, phNo);
+    newNode->next = head;
+    head = newNode;
+}
+
+void insertEnd(char* usn, char* name, char* programme, int sem, char* phNo) {
+    Student* newNode = createNode(usn, name, programme, sem, phNo);
+    if (head == NULL) {
+        head = newNode;
+        return;
+    }
+    Student* temp = head;
+    while (temp->next != NULL)
+        temp = temp->next;
+    temp->next = newNode;
+}
+
+void deleteFront() {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    Student* temp = head;
+    head = head->next;
+    free(temp);
+}
+
+void deleteEnd() {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    if (head->next == NULL) {
+        free(head);
+        head = NULL;
+        return;
+    }
+    Student* temp = head;
+    while (temp->next->next != NULL)
+        temp = temp->next;
+    free(temp->next);
+    temp->next = NULL;
+}
+
+void display() {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    Student* temp = head;
+    int count = 0;
+    while (temp != NULL) {
+        printf("%s %s %s %d %s\n", temp->usn, temp->name, temp->programme, temp->sem, temp->phNo);
+        temp = temp->next;
+        count++;
+    }
+    printf("Total Nodes = %d\n", count);
+}
+
+void trimNewline(char* str) {
+    int len = strlen(str);
+    if (len > 0 && str[len - 1] == '\n')
+        str[len - 1] = '\0';
+}
+
+int main() {
+    int T;
+    scanf("%d", &T);
+    getchar(); 
+
+    char line[200];
+    for (int i = 0; i < T; i++) {
+        fgets(line, sizeof(line), stdin);
+        trimNewline(line);
+
+        if (strncmp(line, "CREATE ", 7) == 0) {
+            int n;
+            sscanf(line + 7, "%d", &n);
+            createList(n);
+        } else if (strncmp(line, "INSERT_FRONT ", 13) == 0) {
+            char usn[MAX_LEN], name[MAX_LEN], programme[MAX_LEN], phNo[MAX_LEN];
+            int sem;
+            sscanf(line + 13, "%s %s %s %d %s", usn, name, programme, &sem, phNo);
+            insertFront(usn, name, programme, sem, phNo);
+        } else if (strncmp(line, "INSERT_END ", 11) == 0) {
+            char usn[MAX_LEN], name[MAX_LEN], programme[MAX_LEN], phNo[MAX_LEN];
+            int sem;
+            sscanf(line + 11, "%s %s %s %d %s", usn, name, programme, &sem, phNo);
+            insertEnd(usn, name, programme, sem, phNo);
+        } else if (strcmp(line, "DELETE_FRONT") == 0) {
+            deleteFront();
+        } else if (strcmp(line, "DELETE_END") == 0) {
+            deleteEnd();
+        } else if (strcmp(line, "DISPLAY") == 0) {
+            display();
+        }
+    }
+    return 0;
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header">6. Doubly Linked List</button>
+            <div class="accordion-content">
+                <div class="code-wrapper">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+struct Employee {
+    int ssn;
+    char name[20];
+    char dept[20];
+    char designation[20];
+    float salary;
+    long long phno;
+    struct Employee* next;
+    struct Employee* prev;
+};
+
+struct Employee* head = NULL;
+struct Employee* tail = NULL;
+
+struct Employee* createNode() {
+    struct Employee* emp = (struct Employee*)malloc(sizeof(struct Employee));
+    scanf("%d %s %s %s %f %lld", 
+          &emp->ssn, emp->name, emp->dept, emp->designation, &emp->salary, &emp->phno);
+    emp->next = emp->prev = NULL;
+    return emp;
+}
+
+void createEnd(int N) {
+    for (int i = 0; i < N; i++) {
+        struct Employee* emp = createNode();
+        if (head == NULL) {
+            head = tail = emp;
+        } else {
+            tail->next = emp;
+            emp->prev = tail;
+            tail = emp;
+        }
+    }
+}
+
+void display() {
+    printf("Linked list elements from begining :\n");
+    if (head == NULL) {
+        printf("List empty to display\n");
+        return;
+    }
+    int count = 0;
+    struct Employee* temp = head;
+    while (temp != NULL) {
+        printf("%d %s %s %s %.6f %lld\n", temp->ssn, temp->name, temp->dept,
+               temp->designation, temp->salary, temp->phno);
+        count++;
+        temp = temp->next;
+    }
+    printf(" No of employees = %d\n", count);
+}
+
+void insertEnd() {
+    struct Employee* emp = createNode();
+    if (head == NULL) {
+        head = tail = emp;
+    } else {
+        tail->next = emp;
+        emp->prev = tail;
+        tail = emp;
+    }
+}
+
+void deleteEnd() {
+    if (tail == NULL) {
+        printf("List empty to display\n");
+        return;
+    }
+    struct Employee* temp = tail;
+    printf("%d %s %s %s %.6f %lld\n", temp->ssn, temp->name, temp->dept,
+           temp->designation, temp->salary, temp->phno);
+    if (head == tail) {
+        head = tail = NULL;
+    } else {
+        tail = tail->prev;
+        tail->next = NULL;
+    }
+    free(temp);
+}
+
+void insertFront() {
+    struct Employee* emp = createNode();
+    if (head == NULL) {
+        head = tail = emp;
+    } else {
+        emp->next = head;
+        head->prev = emp;
+        head = emp;
+    }
+}
+
+void deleteFront() {
+    if (head == NULL) {
+        printf("List empty to display\n");
+        return;
+    }
+    struct Employee* temp = head;
+    printf("%d %s %s %s %.6f %lld\n", temp->ssn, temp->name, temp->dept,
+           temp->designation, temp->salary, temp->phno);
+    if (head == tail) {
+        head = tail = NULL;
+    } else {
+        head = head->next;
+        head->prev = NULL;
+    }
+    free(temp);
+}
+
+int main() {
+    int choice, N;
+    while (scanf("%d", &choice) == 1) {
+        switch (choice) {
+        case 1: scanf("%d", &N); createEnd(N); break;
+        case 2: display(); break;
+        case 3: insertEnd(); break;
+        case 4: deleteEnd(); break;
+        case 5: insertFront(); break;
+        case 6: deleteFront(); break;
+        default: return 0;
+        }
+    }
+    return 0;
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header">7. Binary Search Tree</button>
+            <div class="accordion-content">
+                <div class="code-wrapper">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+typedef struct Node {
+    int data;
+    struct Node *l, *r;
+} Node;
+
+Node* newNode(int v) {
+    Node* t = (Node*)malloc(sizeof(Node));
+    t->data = v;
+    t->l = t->r = NULL;
+    return t;
+}
+
+Node* insertBST(Node* root, int v) {
+    if (!root) return newNode(v);
+    if (v < root->data) root->l = insertBST(root->l, v);
+    else if (v > root->data) root->r = insertBST(root->r, v);
+    return root;
+}
+
+void inorder(Node* t) {
+    if (!t) return;
+    inorder(t->l);
+    printf("%d ", t->data);
+    inorder(t->r);
+}
+
+void preorder(Node* t) {
+    if (!t) return;
+    printf("%d ", t->data);
+    preorder(t->l);
+    preorder(t->r);
+}
+
+void postorder(Node* t) {
+    if (!t) return;
+    postorder(t->l);
+    postorder(t->r);
+    printf("%d ", t->data);
+}
+
+Node* searchBST(Node* root, int k) {
+    if (!root) return NULL;
+    if (k == root->data) return root;
+    if (k < root->data) return searchBST(root->l, k);
+    return searchBST(root->r, k);
+}
+
+int main() {
+    int Q;
+    scanf("%d", &Q);
+    Node* root = NULL;
+    char line[1000];
+
+    while (Q--) {
+        int op;
+        scanf("%d", &op);
+        if (op == 1) {
+            int N;
+            scanf("%d", &N);
+            fgets(line, sizeof(line), stdin); 
+            fgets(line, sizeof(line), stdin);
+            char* token = strtok(line, " ");
+            while (token != NULL) {
+                int v = atoi(token);
+                root = insertBST(root, v);
+                token = strtok(NULL, " ");
+            }
+        }
+        else if (op == 2) {
+            printf("The Inorder display: ");
+            inorder(root);
+            printf("\n");
+            printf("The Preorder display: ");
+            preorder(root);
+            printf("\n");
+            printf("The Postorder display: ");
+            postorder(root);
+            printf("\n");
+        }
+        else if (op == 3) {
+            int K;
+            scanf("%d", &K);
+            if (searchBST(root, K))
+                printf("The element %d is present.\n", K);
+            else
+                printf("The key %d is not present in the BST.\n", K);
+        }
+        else if (op == 4) break;
+    }
+    return 0;
+}</code></pre>
+                </div>
+            </div>
+        </div>
+                <div class="accordion-item">
+            <button class="accordion-header">8. graphs</button>
+            <div class="accordion-content">
+                <div class="code-wrapper">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+<pre><code class="language-c">
+</code></pre>
+                </div>
+            </div>
+        </div>
+
+
+            <div class="accordion-item">
+            <button class="accordion-header">9.hashing</button>
+            <div class="accordion-content">
+                <div class="code-wrapper">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
+<pre><code class="language-c">
+    </code></pre>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+
+    <script>
+        // --- 1. Accordion Logic ---
+        const accordions = document.querySelectorAll('.accordion-header');
+
+        accordions.forEach(acc => {
+            acc.addEventListener('click', function() {
+                // Toggle active class on header
+                this.classList.toggle('active');
+
+                // Toggle logic for the content panel
+                const content = this.nextElementSibling;
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            });
+        });
+
+        // --- 2. Copy to Clipboard Logic ---
+        function copyCode(btn) {
+            // Find the code block associated with this button
+            // The code is inside the sibling <pre> tag
+            const codeBlock = btn.nextElementSibling;
+            const codeText = codeBlock.innerText; // Get raw text
+
+            navigator.clipboard.writeText(codeText).then(() => {
+                // Success feedback
+                const originalText = btn.innerText;
+                btn.innerText = "Copied!";
+                btn.style.backgroundColor = "#a6e3a1"; // Greenish success color
+                btn.style.color = "#1e1e2e";
+
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+                    btn.style.color = "#fff";
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
