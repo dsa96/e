@@ -839,9 +839,9 @@ int main() {
                 <div class="code-wrapper">
                     <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
 <pre><code class="language-c">
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
 
 #define MAX 20
 
@@ -927,6 +927,68 @@ int main() {
                 <div class="code-wrapper">
                     <button class="copy-btn" onclick="copyCode(this)">Copy Code</button>
 <pre><code class="language-c">
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;  // For strcpy, basic string copy
+
+#define SIZE 15  // Hash table size
+
+// Struct for each slot
+typedef struct {
+    char name[21];  // Name up to 20 chars + null
+    int usn;        // 4-digit key
+    int used;       // 1 if occupied, 0 if empty
+} Slot;
+
+Slot table[SIZE];  // The table
+
+// Initialize table to empty
+void init() {
+    for (int i = 0; i < SIZE; i++) {
+        table[i].used = 0;
+    }
+}
+
+// Insert with linear probing
+void insertRec(const char *name, int usn) {
+    int idx = usn % SIZE;  // Hash to start
+    
+    // Probe until empty slot
+    while (table[idx].used) {
+        idx = (idx + 1) % SIZE;  // Wrap around
+    }
+    
+    // Insert
+    strcpy(table[idx].name, name);
+    table[idx].usn = usn;
+    table[idx].used = 1;
+}
+
+int main() {
+    int N;
+    scanf("%d", &N);
+    
+    init();
+    
+    for (int i = 0; i < N; i++) {
+        char name[21];
+        int usn;
+        scanf("%20s %d", name, &usn);  // Safe read
+        // Optional: Check constraints (though not required)
+        if (usn < 1000 || usn > 9999) continue;  // Skip invalid, but inputs should be valid
+        insertRec(name, usn);
+    }
+    
+    // Print exactly 15 lines
+    for (int i = 0; i < SIZE; i++) {
+        if (table[i].used) {
+            printf("%s %d\n", table[i].name, table[i].usn);
+        } else {
+            printf("##\n");
+        }
+    }
+    
+    return 0;
+}
     </code></pre>
                 </div>
             </div>
@@ -983,6 +1045,7 @@ int main() {
     </script>
 </body>
 </html>
+
 
 
 
